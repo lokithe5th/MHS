@@ -9,12 +9,13 @@ MHS is initialized with the goal to become the open-source blueprints for digita
 
 The README serves as a broad overview of the project; it will evolve over time.
 
-## PROPOSED VALUES OF HealthDAO
+## PROPOSED VALUES OF healthDAO
 - Equality
 - Diversity
 - Do No Harm
 - Do Good
 - Self-determination and the Sovereign-self
+- Simplicity
 - Transparency
 
 ### EQUALITY
@@ -31,6 +32,9 @@ Remember: **a person is a person through other people**
 
 ### SELF-DETERMINATION and the SOVEREIGN-SELF
 [Do not presume to control or influence the self-determination and the sovereignity of any person or entity.](https://en.wikipedia.org/wiki/Self-determination)
+
+### SIMPLICITY
+Simple interactions lead to complex systems. 
 
 ### Transparency
 A public good must be auditable by the public it serves and must, as far as the principle of beneficence allows, be designed with this transparent principle in mind.
