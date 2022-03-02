@@ -8,6 +8,7 @@ Please read the README.md document in the projects [GitHub directory](https://gi
 As a personal project, healthDAO has had many private and work-in-progress names. By becoming a public project, the healthDAO's vision of improving health systems has become owned by the community. I have personally been moving towards this goal, of designing digitally native health systems, for the last couple of years. It's what inspired me to get an MBA, to dive into crypto and to learn some Solidity. I hope to be working on the healthDAO for the next decade at least. Longer, if I'm honest. This is regardless of funding or the project's growth. If you look for me, you will find me here, grinding away. It will, hopefully, be on a full time basis, but even if the project does not attract enough funding for that, I will still be here. I sincerely hope that I find a few like-minded souls to go on this crazy adventure with me. We live in interesting times and I wish you all the health in the world.
 
 Yours in kindness,
+
 Lourens Linde
 
 ****
@@ -38,10 +39,12 @@ As a distributed autonomous organization the healthDAO's presence is online. To 
 - Creation of open-source accounting processes
 
 ## 2. Roadmap
-**Twitter Account** 
+**Twitter Account**
+
 [x] Completed on 03/02/2022. [Twitter name](link)
 
 **Domains**: @LourensLinde has secured the following domains:
+
 [x] dao.health
 [0] If funds can be raised, healthdao.eth is on OpenSea (last listed at 1 ETH)
 
@@ -49,10 +52,12 @@ As a distributed autonomous organization the healthDAO's presence is online. To 
 [0x23116a55062a4D65C96E73bA86d402Fe1c9deA4B](https://etherscan.io/address/0x23116a55062a4D65C96E73bA86d402Fe1c9deA4B)
 
 **Multi-sig**
+
 [0] After the first funding cycle four community members who will act as holders for the DAO multi-sig must be chosen. The time-frame for this is 31 March 2022.
 [0] Once the members are selected, the multi-sig wallet must be created and the treasury funds transferred thereto.
 
 **Discord**
+
 [x] The creation of the healthDAO Discord server has been done and can be found [here](#). Please join and feel free to contribute in whatever way you can!
 
 **Juicebox Project**
@@ -68,7 +73,9 @@ The following initial configurations have been decided on by the founder:
 - Bond curve rate: 60%
 
 The goal of the initial funding cycle is as follows:
-**5 ETHER** to be used as follows:
+
+**5 ETHER**
+
 - 1 ETHER to be used for purchasing healthdao.eth or other appropriate ENS domain/s
 - 1 ETHER for web development, preferably to be paid to a community member
 - 3 ETHER to seek legal counsel in founder's home country (RSA) regarding DAO requirements. 
