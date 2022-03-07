@@ -41,11 +41,11 @@ As a distributed autonomous organization the healthDAO's presence is online. To 
 ## 2. Roadmap
 **Twitter Account**
 
-[x] Completed on 03/02/2022. [Twitter name](link)
+[X] Completed on 03/02/2022. [Twitter name](link)
 
 **Domains**: @LourensLinde has secured the following domains:
 
-[x] dao.health
+[X] dao.health
 [0] If funds can be raised, healthdao.eth is on OpenSea (last listed at 1 ETH)
 
 **Temporary Wallet**
@@ -58,7 +58,7 @@ As a distributed autonomous organization the healthDAO's presence is online. To 
 
 **Discord**
 
-[x] The creation of the healthDAO Discord server has been done and can be found [here](#). Please join and feel free to contribute in whatever way you can!
+[X] The creation of the healthDAO Discord server has been done and can be found [here](#). Please join and feel free to contribute in whatever way you can!
 
 **Juicebox Project**
 The Juicebox Protocol is well-suited to allow the DAO to raise funds for it's proposed activities. The easily configurable funding cycle will allow for quick, iterative proposals and developments. 
@@ -74,12 +74,10 @@ The following initial configurations have been decided on by the founder:
 
 The goal of the initial funding cycle is as follows:
 
-**10 ETHER**
+**7 ETHER**
 
 - 1 ETHER to be used for purchasing healthdao.eth or other appropriate ENS domain/s
-- 1 ETHER for web development, preferably to be paid to a community member
 - 3 ETHER to seek legal counsel in founder's home country (RSA) regarding DAO requirements
-- 2 ETHER to appoint open-source accountants
 - 3 ETHER to allow @LourensLinde to work full-time on the project for 8 weeks 
 
 Please see the Funding Cycle 1 document in the GitHub directory. 
@@ -88,8 +86,10 @@ Please see the Funding Cycle 1 document in the GitHub directory.
 The Genesis Proposal is subject to amendment by the community, but the operational matters concerning the creation of the healthDAO and the MHS First Primitive will be handled by the founder until the community is able to propose and vote on further steps.
 
 **To this end the following is noted:**
-- The domains, social media accounts and wallets are under the control of the founder and will be handed over to the community once the healthDAO has been created.
+- The domains, social media accounts and wallets are under the control of the founder and will be handed over to the community once the healthDAO has been created and is able to take ownership and responsibility thereof.
 - The items outlined in the roadmap are the founder's responsibility until such a time when the responsibility can be transferred to the community. 
 
 ## MHS First Primitive
-The first component required for experimenting with digitally native health systems is for a health professional to be able to prove they are a health professional. The MHS First Primitive must thus solve for identification and verification of health professionals and their credentials through a code-based solution. 
+The first component required for experimenting with digitally native health systems is for a health professional to be able to prove they are a health professional. The MHS First Primitive must thus solve for identification and verification of health entities and their credentials through a code-based solution. 
+
+See the files under protocols/First Primitive Development for further details.
