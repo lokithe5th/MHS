@@ -76,7 +76,11 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         string memory _healthId, 
         string memory _governingBody
         ) public onlyRole(MINTER_ROLE) {
-            require(healthEntities.length = 0, "Already initialized");
+            require(healthEntities.length == 0, "Already initialized");
+
+            uint256 tokenId = _tokenIdCounter.current();
+            _tokenIdCounter.increment();
+            _safeMint(to, tokenId);
  
             healthEntities.push(healthEntity({
             healthEntityType: _type,
@@ -115,7 +119,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
          ) public onlyRole(AUDITOR_ROLE) {
             require(msg.sender != ownerOf(uint256(_targetEntity)), "Cannot self-modify");
 
-            healthEntities[_targetEntity].healthEntityType = _healthEntityType;
+            healthEntities[_targetEntity].healthEntityType = int32(_healthEntityType);
             healthEntities[_targetEntity].healthId = _healthId;
             healthEntities[_targetEntity].governingBody = _governingBody;
             healthEntities[_targetEntity].verified = _verified;
