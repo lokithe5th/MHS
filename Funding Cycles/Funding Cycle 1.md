@@ -3,7 +3,7 @@
 The following Juicebox configuration is proposed for funding cycle 1.
 
 ### Start date:
-2022/03/04
+2022/03/09
 
 ### End date:
 2022/03/31
@@ -11,8 +11,12 @@ The following Juicebox configuration is proposed for funding cycle 1.
 ## Configuration detail
 **Target:** 10 ETH
 **Discount rate:** 10%
-**Reserve rate:** 10%
+**Reserve rate:** 20%
 **Bonding curve rate:** 60%
+
+## Reserve recipients:
+- 60% healthsystems.eth
+- 40% lourens.eth
 
 ## Proposed spending breakdown
 The **10 ETH** raised is allocated as follows:
@@ -28,4 +32,4 @@ The amounts are quite arbitrary and might change in the next funding cycle. The 
 
 If the project raises less than the required funding in this funding cycle, the priority of spending would be 1) legal, 2) accounting, 3) web page, 4) domain name and 5) founder runway. The project must survive first in order to thrive later, and I will prioritize operational requirements before founder income requirements.
 
-Once the structures are in place the next funding cycle will focus heavily on hiring a smart contract developer. The business and health system logic will likely be handled by me to start off with. I have already started work on the spec for the first part of the MHS Protocol, the First Primitive.
+Once the structures are in place the next funding cycle will focus heavily on hiring a smart contract developer. The business and health system logic will likely be handled by me, through Metaverse Health Systems (Pty) Ltd, South Africa, to start off with. I have already started work on the spec and smart contracts for the first part of the MHS Protocol, the First Primitive.

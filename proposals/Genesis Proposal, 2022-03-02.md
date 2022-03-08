@@ -74,16 +74,17 @@ The following initial configurations have been decided on by the founder:
 
 The goal of the initial funding cycle is as follows:
 
-**7 ETHER**
+**10 ETHER**
 
 - 1 ETHER to be used for purchasing healthdao.eth or other appropriate ENS domain/s
-- 3 ETHER to seek legal counsel in founder's home country (RSA) regarding DAO requirements
+- 4 ETHER to seek legal counsel in founder's home country (RSA) regarding DAO requirements
 - 3 ETHER to allow @LourensLinde to work full-time on the project for 8 weeks 
+- 1 ETHER to engage with the appropriate accountants for a year
 
 Please see the Funding Cycle 1 document in the GitHub directory. 
 
 ## Formalizing Operational Matters
-The Genesis Proposal is subject to amendment by the community, but the operational matters concerning the creation of the healthDAO and the MHS First Primitive will be handled by the founder until the community is able to propose and vote on further steps.
+The Genesis Proposal is subject to amendment by the community, but the operational matters concerning the creation of the healthDAO and the MHS First Primitive will be handled by the founder and the South African private company "Metaverse Health Systems (Pty) Ltd" until the community is able to propose and vote on further steps.
 
 **To this end the following is noted:**
 - The domains, social media accounts and wallets are under the control of the founder and will be handed over to the community once the healthDAO has been created and is able to take ownership and responsibility thereof.

@@ -11,11 +11,9 @@ The proposed entity struct should have the following properties:
 2. healthID: String: If applicable, the identifier provided by the HCP's governing body. Allows for off-chain verification.
 3. Governing body: String: If applicable, the governing body which provided the HCP ID.
 4. Verified: Bool: Has the HCP been verfied by two other verified HCPs?
-5. Auditor: Bool: Is this HCP trusted to verify and audit other HCPs?
-6. Active: Bool: Is this HCP allowed to practice?
-7. Minter: Bool: Can this HCP induct other HCPs onto the chain?
-8. Reputation: Integer: The HCPs reputation on-chain.
-9. Sponsor: Integer: takes the ID of the ERC721 that verified the HCP.
+5. Active: Bool: Is this HCP allowed to practice?
+6. Reputation: Integer: The HCPs reputation on-chain.
+7. Sponsor: Integer: takes the ID of the ERC721 that verified the HCP.
 
 ## Functions
 The ERC721 contract will require the following functions:
