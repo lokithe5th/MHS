@@ -19,13 +19,13 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     using Counters for Counters.Counter;
 
     struct healthEntity {
-        int32 healthEntityType;     // From list of Entity types: MD, Physio, Occ Ther, Nursing etc
+        uint32 healthEntityType;     // From list of Entity types: MD, Physio, Occ Ther, Nursing etc
         string healthId;            // Provided by health professional's statutory body
         string governingBody;       // The statutory body details
         bool verified;              // Has this Health Entity been verified by another Health Entity?
         address sponsor;            // Who has verified this Health Entity
         bool active;                // Is Health Entity active in health system at the moment?
-        int32 reputation;           // Reputation accrued by Health Entity
+        uint32 reputation;           // Reputation accrued by Health Entity
     }
 
     healthEntity[] public healthEntities;
@@ -52,7 +52,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         _unpause();
     }
 
-    function safeMint(address to, int32 _type, string memory _healthId, string memory _governingBody) public onlyRole(MINTER_ROLE) {
+    function safeMint(address to, uint32 _type, string memory _healthId, string memory _governingBody) public onlyRole(MINTER_ROLE) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
@@ -72,7 +72,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     //Create the first healthEntity. Must be a doxxed entity in order to be held accountable.
     function initializeFirstEntity(
         address to, 
-        int32 _type, 
+        uint32 _type, 
         string memory _healthId, 
         string memory _governingBody
         ) public onlyRole(MINTER_ROLE) {
@@ -115,7 +115,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         string memory _governingBody,
         bool _verified,
         bool _active,
-        int32 _reputation
+        uint32 _reputation
          ) public onlyRole(AUDITOR_ROLE) {
             require(msg.sender != ownerOf(uint256(_targetEntity)), "Cannot self-modify");
 
@@ -149,12 +149,12 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     }
 
     // Sets target NFT to not verified
-    function _revokeVerification(int256 _tokenId) internal {
+    function _revokeVerification(uint256 _tokenId) internal {
         healthEntities[_tokenId].verified = false;
     }
     
     // Sets target NFT to not active
-    function _setNotActive(int256 _tokenId) internal {
+    function _setNotActive(uint256 _tokenId) internal {
         healthEntities[_tokenId].active = false;
     }
 
