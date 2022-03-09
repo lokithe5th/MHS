@@ -5,7 +5,7 @@ pragma solidity ^0.8.4;
 /// @title Metaverse Health Systems: Health Entity
 /// @author @LourensLinde || lourens.eth || LokiThe5th
 /// @notice The contract allows for the creation of an ERC721 which can represent a health system entity on chain.
-/// @dev Explain to a developer any extra details
+/// @dev ERC721 implementation for MHS: HealthEntity
 /// @custom:security-contact lourens@dao.health
 
 import "@openzeppelin/contracts@4.5.0/token/ERC721/ERC721.sol";
@@ -19,13 +19,13 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     using Counters for Counters.Counter;
 
     struct healthEntity {
-        int32 healthEntityType;
-        string healthId;
-        string governingBody;
-        bool verified;
-        address sponsor;
-        bool active;
-        int32 reputation;
+        int32 healthEntityType;     // From list of Entity types: MD, Physio, Occ Ther, Nursing etc
+        string healthId;            // Provided by health professional's statutory body
+        string governingBody;       // The statutory body details
+        bool verified;              // Has this Health Entity been verified by another Health Entity?
+        address sponsor;            // Who has verified this Health Entity
+        bool active;                // Is Health Entity active in health system at the moment?
+        int32 reputation;           // Reputation accrued by Health Entity
     }
 
     healthEntity[] public healthEntities;
@@ -37,7 +37,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     address public constant ZERO_ADDRESS = address(0x0000000000000000000000000000000000000000);
     Counters.Counter private _tokenIdCounter;
 
-    constructor() ERC721("healthEntity", "HEALTH") {
+    constructor() ERC721("MHS: HealthEntity", "HEALTH") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
@@ -136,6 +136,28 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
+    // Internal functions that should be called on transfer
+    // On transfer the following two actions must be taken: 1) Verification must be reset, 2) Health Entity must be marked as not active
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public virtual override {
+        safeTransferFrom(from, to, tokenId, "");
+        _revokeVerification(tokenId);
+        _setNotActive(tokenId);
+    }
+
+    // Sets target NFT to not verified
+    function _revokeVerification(int256 _tokenId) internal {
+        healthEntities[_tokenId].verified = false;
+    }
+    
+    // Sets target NFT to not active
+    function _setNotActive(int256 _tokenId) internal {
+        healthEntities[_tokenId].active = false;
+    }
+
     // The following functions are overrides required by Solidity.
 
     function supportsInterface(bytes4 interfaceId)
@@ -146,4 +168,5 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     {
         return super.supportsInterface(interfaceId);
     }
+
 }
