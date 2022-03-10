@@ -78,7 +78,9 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         emit newHealthEntity(tokenId, to, _type);
     }
 
-    //Create the first healthEntity. Must be a doxxed entity in order to be held accountable.
+    //  Create the first healthEntity. Must be a doxxed entity in order to be held accountable.
+    //  Note that the bytes32 _healthId will require the keccak256 hash to be determined prior to input into contract. 
+    //  This means the 64 character hash must get the "0x" in front of it
     function initializeFirstEntity(
         address to, 
         uint32 _type, 
