@@ -90,17 +90,17 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     }
 
     //Verify a health entity
-    function verifyHealthEntity(int256 _targetEntity, uint256 _verifyingEntity) public {
-        require(msg.sender != ownerOf(uint256(_targetEntity)), "Cannot self-verify");
-        require(healthEntities[uint256(_targetEntity)].verified == false, "Target already verified");
-        require(ownerOf(uint256(_verifyingEntity)) == msg.sender, "Caller must own Verifying Token");
+    function setVerification(uint256 _targetEntity, uint256 _verifyingEntity) public {
+        require(msg.sender != ownerOf(_targetEntity), "Cannot self-verify");
+        require(healthEntities[_targetEntity].verified == false, "Target already verified");
+        require(ownerOf(_verifyingEntity) == msg.sender, "Caller must own Verifying Token");
         require(healthEntities[_verifyingEntity].verified, "Verifying token is not yet verified");
 
-        healthEntities[uint256(_targetEntity)].verified = true;
-        healthEntities[uint256(_targetEntity)].sponsor = msg.sender;
+        healthEntities[_targetEntity].verified = true;
+        healthEntities[_targetEntity].sponsor = msg.sender;
 
         //Reputation is gained for verifying other healthEntities
-        healthEntities[uint256(_verifyingEntity)].reputation++;
+        healthEntities[_verifyingEntity].reputation++;
     }
 
     //Auditor actions. Only to be used by Auditor multisig. The multisig become the sponsor.
@@ -150,6 +150,11 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     // Sets target NFT to not active
     function _setNotActive(uint256 _tokenId) internal {
         healthEntities[_tokenId].active = false;
+    }
+
+    // Method to allow someone to verify a health entity without storing direct info on chain. Contains a keccak256 hash of JSON format with governing body details and unique identifier
+    function verifyHealthEntity(uint32 _targetId, string memory _verificationString) public view returns (bool) {
+        require(healthEntities[_targetId].healthId == keccak256(_verificationString));
     }
 
     // The following functions are overrides required by Solidity.
