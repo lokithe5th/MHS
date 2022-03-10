@@ -19,12 +19,12 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     using Counters for Counters.Counter;
 
     //  Events
-    event newHealthEntity(uint32 tokenId, address tokenHolder, uint32 healthEntityType);
-    event healthEntityVerified(uint32 tokenId, uint32 sponsor);
-    event revokeVerification(uint32 tokenId, uint32 auditor);
-    event healthEntityModified(uint32 tokenId, uint32 auditor);
-    event reputationEvent(uint32 tokenId, uint32 reputationChange);
-    event verificationRequest(uint32 tokenId);
+    event newHealthEntity(uint256 tokenId, address tokenHolder, uint32 healthEntityType);
+    event healthEntityVerified(uint256 tokenId, uint32 sponsor);
+    event revokeVerification(uint256 tokenId, address auditor);
+    event healthEntityModified(uint256 tokenId, uint32 auditor);
+    event reputationEvent(uint256 tokenId, uint32 reputationChange);
+    event verificationRequest(uint256 tokenId);
 
     //  Struct containing Health Entities
     struct healthEntity {
@@ -155,7 +155,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
 
     //  Internal Functions
     //  Function to increase reputation
-    function _incrementReputation(uint32 _targetId, uint32 _incrementBy) internal {
+    function _incrementReputation(uint256 _targetId, uint32 _incrementBy) internal {
         require(_incrementBy > 0);
         uint32 _reputation =  healthEntities[_targetId].reputation;
         healthEntities[_targetId].reputation = _reputation + _incrementBy;
@@ -176,8 +176,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     }
 
     //  Method to allow someone to verify a health entity without storing direct info on chain. Contains a keccak256 hash of JSON format with governing body details and unique identifier
-    function verifyHealthEntity(uint32 _targetId, string memory _verificationString) public view returns (bool) {
-        emit verificationRequest(_targetId);
+    function verifyHealthEntity(uint256 _targetId, bytes memory _verificationString) public view returns (bool) {
         require(_targetId > 0, "tokenId must be higher than 0");
         require(healthEntities[_targetId].healthId == keccak256(_verificationString), "Supplied information does not match records");
         return true;
