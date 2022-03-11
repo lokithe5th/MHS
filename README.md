@@ -36,9 +36,9 @@ Remember: **a person is a person through other people**
 ### SIMPLICITY
 Simple interactions lead to complex systems. 
 
-### Transparency
+### TRANSPARENCY
 A public good must be auditable by the public it serves and must, as far as the principle of beneficence allows, be designed with this transparent principle in mind.
 *****
 
-## Proposals
+## PROPOSALS
 2022/03/02: The proposal named *The healthDAO Genesis Proposal* has been uploaded to the GitHub folder.
