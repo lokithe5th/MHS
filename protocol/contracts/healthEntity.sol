@@ -151,33 +151,37 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
             healthEntities[_targetEntity].reputation = _reputation;
          }
 
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
-        internal
-        whenNotPaused
-        override(ERC721, ERC721Enumerable)
-    {
-        super._beforeTokenTransfer(from, to, tokenId);
-    }
+    function _beforeTokenTransfer(
+        address from, 
+        address to, 
+        uint256 tokenId
+        ) internal whenNotPaused override(ERC721, ERC721Enumerable) {
+            super._beforeTokenTransfer(from, to, tokenId);
+        }
 
-    // Internal functions that should be called on transfer
-    // On transfer the following action must be taken: 1) Verification must be reset
+    //  Internal functions that should be called on transfer
+    //  On transfer the following action must be taken: 1) Verification must be reset
+    //  Transfer is always followed by a reverification process to ensure health entity integrity. 
     function safeTransferFrom(
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override {
-        safeTransferFrom(from, to, tokenId, "");
-        _revokeVerification(tokenId);
+        ) public virtual override {
+            safeTransferFrom(from, to, tokenId, "");
+            _revokeVerification(tokenId);
     }
 
     //  Internal Functions
     //  Function to increase reputation
-    function _incrementReputation(uint256 _targetId, uint32 _incrementBy) internal {
-        require(_incrementBy > 0);
-        uint32 _reputation =  healthEntities[_targetId].reputation;
-        healthEntities[_targetId].reputation = _reputation + _incrementBy;
+    function _incrementReputation(
+        uint256 _targetId, 
+        uint32 _incrementBy
+        ) internal {
+            require(_incrementBy > 0);
+            uint32 _reputation =  healthEntities[_targetId].reputation;
+            healthEntities[_targetId].reputation = _reputation + _incrementBy;
 
-        emit reputationEvent(_targetId, _incrementBy);
+            emit reputationEvent(_targetId, _incrementBy); 
     }
 
     //  Sets target NFT to not verified
@@ -193,10 +197,13 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     }
 
     //  Method to allow someone to verify a health entity without storing direct info on chain. Contains a keccak256 hash of JSON format with governing body details and unique identifier
-    function verifyHealthEntity(uint256 _targetId, bytes memory _verificationString) public view returns (bool) {
-        require(_targetId > 0, "tokenId must be higher than 0");
-        require(healthEntities[_targetId].healthId == keccak256(_verificationString), "Supplied information does not match records");
-        return true;
+    function verifyHealthEntity(
+        uint256 _targetId, 
+        bytes memory _verificationString
+        ) public view returns (bool) {
+            require(_targetId > 0, "tokenId must be higher than 0");
+            require(healthEntities[_targetId].healthId == keccak256(_verificationString), "Supplied information does not match records");
+            return true;
     }
 
     //  The following functions are overrides required by Solidity.
