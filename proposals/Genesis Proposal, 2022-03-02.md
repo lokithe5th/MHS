@@ -91,6 +91,6 @@ The Genesis Proposal is subject to amendment by the community, but the operation
 - The items outlined in the roadmap are the founder's responsibility until such a time when the responsibility can be transferred to the community. 
 
 ## MHS First Primitive
-The first component required for experimenting with digitally native health systems is for a health professional to be able to prove they are a health professional. The MHS First Primitive must thus solve for identification and verification of health entities and their credentials through a code-based solution. 
+The first component required for experimenting with digitally native health systems, within the regenerative cryptoeconomics framework, is for a health professional to be able to prove they are a health professional. The MHS First Primitive must thus solve for identification and verification of health entities and their credentials through a code-based solution. 
 
-See the files under protocols/First Primitive Development for further details.
+See the files under protocol/contracts for further details.
