@@ -1,6 +1,6 @@
 # Funding Cycle 1
 
-The following Juicebox configuration is proposed for funding cycle 1.
+The following configuration is proposed for funding cycle 1.
 
 ### Start date:
 2022/03/09
@@ -9,22 +9,16 @@ The following Juicebox configuration is proposed for funding cycle 1.
 2022/03/31
 
 ## Configuration detail
-**Target:** 10 ETH
-**Discount rate:** 10%
-**Reserve rate:** 20%
-**Bonding curve rate:** 60%
-
-## Reserve recipients:
-- 60% healthsystems.eth
-- 40% lourens.eth
+[Gitcoin grant](https://gitcoin.co/grants/5015/metaverse-health-systems-healthdao)
 
 ## Proposed spending breakdown
-The **10 ETH** raised is allocated as follows:
-- 3 ETH for @LourensLinde to work full time on the project for 2 months
-- 1 ETH for the domain name, healthdao.eth, or other appropriate name
-- 2 ETH for open-source accounting for the project
-- 3 ETH for legal advice regarding the project structure in founder's home country (RSA)
-- 1 ETH for initial web page development
+~~The 10 ETH raised is allocated as follows:~~
+- ~~3 ETH for @LourensLinde to work full time on the project for 2 months~~
+- ~~1 ETH for the domain name, healthdao.eth, or other appropriate name~~
+- ~~2 ETH for open-source accounting for the project~~
+- ~~3 ETH for legal advice regarding the project structure in founder's home country (RSA)~~
+- ~~1 ETH for initial web page development~~
+See below.
 
 ## Notes from founder
 
