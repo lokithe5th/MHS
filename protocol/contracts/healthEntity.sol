@@ -19,25 +19,38 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     using Counters for Counters.Counter;
 
     //  Events
+    //  Emit event for new health entity registration
     event newHealthEntity(uint256 tokenId, address tokenHolder, uint32 healthEntityType);
+
+    //  Emit event for health entity being verified
     event healthEntityVerified(uint256 tokenId, uint32 sponsor);
+
+    //  Emit event when a MHS Auditor revokes a health entity's verification
     event revokeVerification(uint256 tokenId, address auditor);
+
+    //  Emit an event when a MHS Auditor modifies a health entity
     event healthEntityModified(uint256 tokenId, uint32 auditor);
+
+    //  Emit an event when reputation is added to a health entity
     event reputationEvent(uint256 tokenId, uint32 reputationChange);
+    
+    //  Emit a request when a health entity requests verification after minting or transfer
     event verificationRequest(uint256 tokenId);
 
     //  Struct containing Health Entities
     struct healthEntity {
         uint32 healthEntityType;        //  From list of Entity types: MD, Physio, Occ Ther, Nursing etc
+        uint32 reputation;              //  Reputation accrued by Health Entity
         bytes32 healthId;               //  Keccak256 hash of ID provided by health professional's statutory body
         bool verified;                  //  Has this Health Entity been verified by another Health Entity?
-        address sponsor;                //  Who has verified this Health Entity
         bool active;                    //  Is Health Entity active in health system at the moment?
-        uint32 reputation;              //  Reputation accrued by Health Entity
+        address sponsor;                //  Who has verified this Health Entity
     }
 
+    //  Array of health entities 
     healthEntity[] public healthEntities;
 
+    //  Roles for testing. Later deployments may change these roles.
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant AUDITOR_ROLE = keccak256("AUDITOR_ROLE");
@@ -60,6 +73,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         _unpause();
     }
 
+
     function safeMint(address to, uint32 _type, bytes32 _healthId) public onlyRole(MINTER_ROLE) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
@@ -68,11 +82,11 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         //Create the new healthEntity. 
         healthEntities.push(healthEntity({
             healthEntityType: _type,
+            reputation: 0,
             healthId: _healthId,
             verified: false,
-            sponsor: ZERO_ADDRESS,
             active: true,
-            reputation: 0
+            sponsor: ZERO_ADDRESS
         }));
 
         emit newHealthEntity(tokenId, to, _type);
@@ -112,11 +126,13 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         healthEntities[_targetEntity].verified = true;
         healthEntities[_targetEntity].sponsor = msg.sender;
 
+        emit healthEntityVerified(_targetEntity, msg.sender);
+
         //Reputation is gained for verifying other healthEntities
         _incrementReputation(_verifyingEntity, 1);
     }
 
-    //Auditor actions. Only to be used by Auditor multisig. The multisig become the sponsor.
+    //MHS Auditor actions. Only to be used by MHS Auditor multisig. The multisig becomes the sponsor.
     function modifyTargetHealthEntity(
         uint256 _targetEntity,
         uint32 _healthEntityType,
@@ -144,7 +160,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     }
 
     // Internal functions that should be called on transfer
-    // On transfer the following two actions must be taken: 1) Verification must be reset, 2) Health Entity must be marked as not active
+    // On transfer the following action must be taken: 1) Verification must be reset
     function safeTransferFrom(
         address from,
         address to,
@@ -152,7 +168,6 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     ) public virtual override {
         safeTransferFrom(from, to, tokenId, "");
         _revokeVerification(tokenId);
-        _setNotActive(tokenId);
     }
 
     //  Internal Functions
