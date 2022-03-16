@@ -18,24 +18,27 @@ import "@openzeppelin/contracts@4.5.0/utils/Counters.sol";
 contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
     using Counters for Counters.Counter;
 
-    //  Events
+    ///  Events
     //  Emit event for new health entity registration
-    event newHealthEntity(uint256 tokenId, address tokenHolder, uint32 healthEntityType);
+    event newHealthEntity(uint32 tokenId, address tokenHolder, uint32 healthEntityType);
 
     //  Emit event for health entity being verified
-    event healthEntityVerified(uint256 tokenId, uint32 sponsor);
+    event healthEntityVerified(uint32 tokenId, uint32 sponsor);
 
     //  Emit event when a MHS Auditor revokes a health entity's verification
-    event revokeVerification(uint256 tokenId, address auditor);
+    event revokeVerification(uint32 tokenId, address auditor);
+
+    // Emit event when set to inactive
+    event setInactive(uint32 tokenId, address auditor);
 
     //  Emit an event when a MHS Auditor modifies a health entity
-    event healthEntityModified(uint256 tokenId, uint32 auditor);
+    event auditorAction(uint32 tokenId, address auditor);
 
     //  Emit an event when reputation is added to a health entity
-    event reputationEvent(uint256 tokenId, uint32 reputationChange);
+    event reputationEvent(uint32 tokenId, uint32 reputationChange);
     
     //  Emit a request when a health entity requests verification after minting or transfer
-    event verificationRequest(uint256 tokenId);
+    event verificationRequest(uint32 tokenId);
 
     //  Struct containing Health Entities
     struct healthEntity {
@@ -94,7 +97,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
 
     //  Create the first healthEntity. Must be a doxxed entity in order to be held accountable.
     //  Note that the bytes32 _healthId will require the keccak256 hash to be determined prior to input into contract. 
-    //  This means the 64 character hash must get the "0x" in front of it
+    //  This means the 64 character hash must be appended to "0x"
     function initializeFirstEntity(
         address to, 
         uint32 _type, 
@@ -116,8 +119,12 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         }));
     }
 
-    //Verify a health entity
-    function setVerification(uint256 _targetEntity, uint256 _verifyingEntity) public {
+    /// @notice Verify a health entity
+    /// @dev _verifyingEntity is required to make sure the sponsor address owns a valid health entity token
+    /// @param _targetEntity The uint representing the target entity
+    /// @param _verifyingEntity The uint representing the entity sponsoring the target entity
+    /// @custom Also calls _incrementReputation for sponsor
+    function setVerification(uint32 _targetEntity, uint32 _verifyingEntity) public {
         require(msg.sender != ownerOf(_targetEntity), "Cannot self-verify");
         require(healthEntities[_targetEntity].verified == false, "Target already verified");
         require(ownerOf(_verifyingEntity) == msg.sender, "Caller must own Verifying Token");
@@ -127,21 +134,28 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         healthEntities[_targetEntity].sponsor = msg.sender;
 
         emit healthEntityVerified(_targetEntity, msg.sender);
-
-        //Reputation is gained for verifying other healthEntities
         _incrementReputation(_verifyingEntity, 1);
     }
 
-    //MHS Auditor actions. Only to be used by MHS Auditor multisig. The multisig becomes the sponsor.
+    /// @notice MHS Auditor actions only by DAO authority. 
+    /// @dev Only to be used by MHS Auditor multisig. The multisig becomes the sponsor.
+    /// @param _targetEntity Entity to be modified
+    /// @param _healthEntityType Set the target entity's type from the open-source document available in project repo.
+    /// @param _healthId Set the target token's healthId. Takes a Keccak256 hash, format is "0x[64 character hash]". 
+    /// @param _verified Set the target token's verification status.
+    /// @param _active Set the target token's "active" status. Only to be used with decommisioned or disqualified tokens.
+    /// @param _reputation Set the target token's reputation. Should only be set to current value or 0 if modified.
+    /// @custom Be aware that actions must be authorised by DAO and signed by multisig. Scope is needed to account for edge cases (verifiably stolen tokens, catastrophic loss of private keys, etc).  
+    /// @custom Emits auditorAction event.
     function modifyTargetHealthEntity(
-        uint256 _targetEntity,
+        uint32 _targetEntity,
         uint32 _healthEntityType,
         bytes32 _healthId,
         bool _verified,
         bool _active,
         uint32 _reputation
          ) public onlyRole(AUDITOR_ROLE) {
-            require(msg.sender != ownerOf(uint256(_targetEntity)), "Cannot self-modify");
+            require(msg.sender != ownerOf(uint32(_targetEntity)), "Cannot self-modify");
 
             healthEntities[_targetEntity].healthEntityType = _healthEntityType;
             healthEntities[_targetEntity].healthId = _healthId;
@@ -149,6 +163,8 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
             healthEntities[_targetEntity].sponsor = msg.sender;
             healthEntities[_targetEntity].active = _active;
             healthEntities[_targetEntity].reputation = _reputation;
+
+            emit auditorAction(_targetId, msg.sender);
          }
 
     function _beforeTokenTransfer(
@@ -159,9 +175,9 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
             super._beforeTokenTransfer(from, to, tokenId);
         }
 
-    //  Internal functions that should be called on transfer
-    //  On transfer the following action must be taken: 1) Verification must be reset
-    //  Transfer is always followed by a reverification process to ensure health entity integrity. 
+    ///  @notice Internal functions that should be called on transfer
+    ///  @dev Verification must be reset
+    ///  @custom is always followed by a reverification process to ensure health entity integrity.
     function safeTransferFrom(
         address from,
         address to,
@@ -171,8 +187,10 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
             _revokeVerification(tokenId);
     }
 
-    //  Internal Functions
-    //  Function to increase reputation
+    /// Internal Functions
+    /// @notice Function to increase reputation
+    /// @dev Increments the reputation by the given amount
+    /// @custom Incentive Mechanism Design
     function _incrementReputation(
         uint256 _targetId, 
         uint32 _incrementBy
@@ -184,21 +202,32 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
             emit reputationEvent(_targetId, _incrementBy); 
     }
 
-    //  Sets target NFT to not verified
-    function _revokeVerification(uint256 _tokenId) internal {
+    /// @notice Sets target NFT to not verified
+    /// @dev An internal function to revoke verification upon token transfer.
+    /// @param _tokenId Uint256 representing tokenId that must have verification revoked
+    /// @custom Incentive Mechanism Design 
+    function _revokeVerification(uint32 _tokenId) internal {
         healthEntities[_tokenId].verified = false;
-
         emit revokeVerification(_tokenId, msg.sender);
     }
     
-    //  Sets target NFT to not active
-    function _setNotActive(uint256 _tokenId) internal {
+    /// @notice Sets target NFT to inactive
+    /// @param _tokenId Uint32 representing tokenId which must be set to inactive
+    /// @custom Only callable by MHS Auditor multisig
+    function _setNotActive(uint32 _tokenId) internal {
         healthEntities[_tokenId].active = false;
+        emit setInactive(_tokenId, msg.sender);
     }
 
-    //  Method to allow someone to verify a health entity without storing direct info on chain. Contains a keccak256 hash of JSON format with governing body details and unique identifier
+    /// @notice Method to allow someone to verify a health entity without storing direct info on chain. 
+    /// @dev Contains a keccak256 hash of compact JSON format with governing body details and unique identifier
+    /// @dev Format for front-end: {"governingBody":"[governing body]","healthId":"[official health ID]"}
+    /// @param _targetId Target token
+    /// @param _verificationString "0x" with Keccak256 hash appended
+    /// @custom The hash is used to prevent unnecessary exposure of health entity information
+    /// @return bool Does health entity credentials hash provide stored hash
     function verifyHealthEntity(
-        uint256 _targetId, 
+        uint32 _targetId, 
         bytes memory _verificationString
         ) public view returns (bool) {
             require(_targetId > 0, "tokenId must be higher than 0");
