@@ -14,7 +14,7 @@ import "@openzeppelin/contracts@4.5.0/security/Pausable.sol";
 import "@openzeppelin/contracts@4.5.0/access/AccessControl.sol";
 import "@openzeppelin/contracts@4.5.0/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts@4.5.0/utils/Counters.sol";
-import "./HealToken.sol";
+import "./HealthEntity.sol";
 
 contract IncentiveMechanisms is HealthEntity {
 
@@ -41,10 +41,7 @@ contract IncentiveMechanisms is HealthEntity {
     bytes32 public constant TREASURY_ROLE = keccak256("TREASURY_ROLE");
 
 
-    constructor() ERC721("MHS: HealthEntity", "HEALER") {
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(PAUSER_ROLE, msg.sender);
-        _grantRole(MINTER_ROLE, msg.sender);
+    constructor() {
         _grantRole(TREASURY_ROLE, msg.sender);
 
         /// Set first transactionType as "VERIFY"
@@ -58,41 +55,41 @@ contract IncentiveMechanisms is HealthEntity {
 
     /// @notice Function to allocate tokens for health interactions or transactions
     /// @dev Adds the appropriate amount to the tokens mapping
-    /// @param tokenId TokenId which receives a token allocation
-    /// @param transactionType Type of transaction that is earning tokens
+    /// @param _tokenId TokenId which receives a token allocation
+    /// @param _transactionType Type of transaction that is earning tokens
     function allocateTokens(
         uint32 _tokenId, 
         string memory _transactionType
         ) public onlyRole(MINTER_ROLE) {
-            tokenBalances[_tokenId] = _tokenAllocatedAmount(_transactionType) + tokenBalances[_tokenId];
+            tokenBalances[_tokenId] = _tokensAllocated(_transactionType) + tokenBalances[_tokenId];
         }   
 
     /// Internal Functions
     
     /// @notice
     /// @dev
-    /// @param
-    function _tokenAllocatedAmount(
+    /// @param _transactionType The string representing the transaction type
+    function _tokensAllocated(
         string memory _transactionType
-        ) internal returns (uint32) {
+        ) internal view returns (uint32) {
             bool _transactionTypeFound = false;
-            for (uint i; i < healthTransactions.length; i++) {
-                if (_transactionType == transactionTypes[k].transactionType) {
+            for (uint i; i < transactionTypes.length; i++) {
+                if (keccak256(bytes(_transactionType)) == keccak256(bytes(transactionTypes[i].transactionType))) {
                     _transactionTypeFound = true;
-                    return (transactionTypes[k].baseReward + transactionTypes[k].rewardModifier);
+                    return (transactionTypes[i].baseReward + transactionTypes[i].rewardModifier);
                 }
             }
-
             require(_transactionTypeFound, "Transaction type not found!");
+            return 0;
         }
 
     /// @notice View function for token balance mapped to tokenId
     /// @dev Returns the number of HEALZ held by the given tokenId
-    /// @param
+    /// @param _tokenId Uint representing the target token
     function tokenBalance(
         uint32 _tokenId
-        ) external view returns (uint32) {
-            require(_tokenId, "Token holder doesn't exist!");
+        ) external view returns (uint256) {
+            require(_tokenId > healthEntities.length, "Token holder doesn't exist!");
             return tokenBalances[_tokenId];
     }
     
@@ -101,7 +98,7 @@ contract IncentiveMechanisms is HealthEntity {
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721, ERC721Enumerable, AccessControl)
+        override(HealthEntity)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
