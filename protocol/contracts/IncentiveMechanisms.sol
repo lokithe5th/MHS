@@ -2,10 +2,10 @@
 // Metaverse Health Systems
 pragma solidity ^0.8.4;
 
-/// @title Metaverse Health Systems: Health Entity
+/// @title Metaverse Health Systems: Health Constants
 /// @author @LourensLinde || lourens.eth || LokiThe5th
-/// @notice The contract allows for the creation of an ERC721 which can represent a health system entity on chain.
-/// @dev ERC721 implementation for MHS: HealthEntity
+/// @notice The contract extends HealthEntity to allow for setting of constants needed for ERC20 incentive mechanism.
+/// @dev Incentive mechanisms governing the MHS protocol can be added and stored here.
 /// @custom:security-contact lourens@dao.health
 
 import "@openzeppelin/contracts@4.5.0/token/ERC721/ERC721.sol";
@@ -15,62 +15,42 @@ import "@openzeppelin/contracts@4.5.0/access/AccessControl.sol";
 import "@openzeppelin/contracts@4.5.0/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts@4.5.0/utils/Counters.sol";
 
-contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC721Burnable {
-    using Counters for Counters.Counter;
+contract IncentiveMechanisms is HealthEntity {
 
     ///  Events
     //  Emit event for new health entity registration
-    event newHealthEntity(uint32 tokenId, address tokenHolder, uint32 healthEntityType);
+    event newHealthTransaction(string transactionType, uint32 baseReward, uint32 rewardModifier, address sponsor);
 
-    //  Emit event for health entity being verified
-    event healthEntityVerified(uint32 tokenId, address sponsor);
-
-    //  Emit event when a MHS Auditor revokes a health entity's verification
-    event revokeVerification(uint32 tokenId, address auditor);
-
-    // Emit event when set to inactive
-    event setInactive(uint32 tokenId, address auditor);
-
-    //  Emit an event when a MHS Auditor modifies a health entity
-    event auditorAction(uint32 tokenId, address auditor);
-
-    //  Emit an event when reputation is added to a health entity
-    event reputationEvent(uint32 tokenId, uint32 reputationChange);
-    
-    //  Emit a request when a health entity requests verification after minting or transfer
-    event verificationRequest(uint32 tokenId);
-
-    //  Struct containing Health Entities
-    struct healthEntity {
-        uint32 healthEntityType;        //  From list of Entity types: MD, Physio, Occ Ther, Nursing, Patient, Admin etc
-        uint32 reputation;              //  Reputation accrued by Health Entity
-        bytes32 healthId;               //  Keccak256 hash of ID provided by health professional's statutory body
-        bool verified;                  //  Has this Health Entity been verified by another Health Entity?
-        bool active;                    //  Is Health Entity active in health system at the moment?
-        address sponsor;                //  Who has verified this Health Entity
+    //  Struct containing Health Transactions
+    struct healthTransaction {
+        string transactionType;
+        uint32 baseReward;
+        uint32 rewardModifier;
+        address sponsor;
     }
 
-    //  Array of health entities 
-    healthEntity[] public healthEntities;
+    //  Array of different health transactions 
+    healthTransaction[] public healthTransactions;
 
-    ///  Roles for testing. Later deployments may change these roles to allow for decentralizing of minting function.
-    ///  @notice If minter role depracted a payable modifier must be implemented on the safeMint function to provide Sybil-resistance
-    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    /// @notice Treasury role is given to a multisig wallet which is governed by the appropriate DAO structure
+    /// @custom:treasury This role is subject to transparent decision making and community oversight.
+    bytes32 public constant TREASURY_ROLE = keccak256("TREASURY_ROLE");
 
-    /// @notice Auditor role is given to a multisig wallet which is governed by the appropriate DAO structure
-    /// @custom:auditor Auditor role is subject to transparent decision making and community oversight.
-    bytes32 public constant AUDITOR_ROLE = keccak256("AUDITOR_ROLE");
-
-    /// @notice Simple constant to allow the first health entity to be minted with the zero-address as sponsor
-    address public constant ZERO_ADDRESS = address(0x0000000000000000000000000000000000000000);
-    Counters.Counter private _tokenIdCounter;
 
     constructor() ERC721("MHS: HealthEntity", "HEALER") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(AUDITOR_ROLE, msg.sender);
+        _grantRole(TREASURY_ROLE, msg.sender);
+
+        /// Set first transactionType as "VERIFY"
+        healthTransactions.push(healthTransaction({
+            transactionType: "VERIFY",
+            baseReward: 10,
+            rewardMofifier: 2,
+            sponsor: msg.sender
+        }));
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {
