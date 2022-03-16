@@ -39,7 +39,7 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
 
     //  Struct containing Health Entities
     struct healthEntity {
-        uint32 healthEntityType;        //  From list of Entity types: MD, Physio, Occ Ther, Nursing etc
+        uint32 healthEntityType;        //  From list of Entity types: MD, Physio, Occ Ther, Nursing, Patient, Admin etc
         uint32 reputation;              //  Reputation accrued by Health Entity
         bytes32 healthId;               //  Keccak256 hash of ID provided by health professional's statutory body
         bool verified;                  //  Has this Health Entity been verified by another Health Entity?
@@ -50,11 +50,16 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
     //  Array of health entities 
     healthEntity[] public healthEntities;
 
-    //  Roles for testing. Later deployments may change these roles.
+    ///  Roles for testing. Later deployments may change these roles to allow for decentralizing of minting function.
+    ///  @notice If minter role depracted a payable modifier must be implemented on the safeMint function to provide Sybil-resistance
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+
+    /// @notice Auditor role is given to a multisig wallet which is governed by the appropriate DAO structure
+    /// @custom Auditor role is subject to transparent decision making and community oversight.
     bytes32 public constant AUDITOR_ROLE = keccak256("AUDITOR_ROLE");
 
+    /// @notice Simple constant to allow the first health entity to be minted with the zero-address as sponsor
     address public constant ZERO_ADDRESS = address(0x0000000000000000000000000000000000000000);
     Counters.Counter private _tokenIdCounter;
 
@@ -92,9 +97,9 @@ contract HealthEntity is ERC721, ERC721Enumerable, Pausable, AccessControl, ERC7
         emit newHealthEntity(tokenId, to, _type);
     }
 
-    //  Create the first healthEntity. Must be a doxxed entity in order to be held accountable.
-    //  Note that the bytes32 _healthId will require the keccak256 hash to be determined prior to input into contract. 
-    //  This means the 64 character hash must get the "0x" in front of it
+    /// @notice Create the first healthEntity. Must be a doxxed entity in order to be held accountable.
+    /// @custom Note that the bytes32 _healthId will require the keccak256 hash to be determined prior to input into contract. 
+    /// @custom This means the 64 character hash must get the "0x" in front of it
     function initializeFirstEntity(
         address to, 
         uint32 _type, 
