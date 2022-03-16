@@ -48,7 +48,7 @@ contract IncentiveMechanisms is HealthEntity {
         healthTransactions.push(healthTransaction({
             transactionType: "VERIFY",
             baseReward: 10,
-            rewardMofifier: 2,
+            rewardModifier: 2,
             sponsor: msg.sender
         }));
     }
