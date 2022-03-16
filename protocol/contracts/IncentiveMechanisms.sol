@@ -25,6 +25,7 @@ contract IncentiveMechanisms is HealthEntity {
     //  Struct containing Health Transactions
     struct healthTransaction {
         string transactionType;
+        uint8 repModifier;
         uint32 baseReward;
         uint32 rewardModifier;
         address sponsor;
@@ -47,6 +48,7 @@ contract IncentiveMechanisms is HealthEntity {
         /// Set first transactionType as "VERIFY"
         transactionTypes.push(healthTransaction({
             transactionType: "VERIFY",
+            repModifier: 1,
             baseReward: 10,
             rewardModifier: 2,
             sponsor: msg.sender
