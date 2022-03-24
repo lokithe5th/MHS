@@ -2,9 +2,9 @@
 // Metaverse Health Systems
 pragma solidity ^0.8.4;
 
-/// @title Metaverse Health Systems: Incentive Mechanisms
+/// @title Metaverse Health Systems
 /// @author @LourensLinde || lourens.eth || LokiThe5th
-/// @notice The contract extends HealthEntity to allow for setting of constants needed for ERC20 incentive mechanism.
+/// @notice The contract extends HealthEntity to allow for setting of constants needed for ERC20 incentive mechanisms.
 /// @dev Incentive mechanisms governing the MHS protocol can be added and stored here.
 /// @custom:security-contact lourens@dao.health
 
@@ -16,13 +16,13 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./HealthEntity.sol";
 
-contract IncentiveMechanisms is HealthEntity {
+contract MHS is HealthEntity {
 
-    ///  Events
+    /// Events
     //  Emit event for new health entity registration
     event newHealthTransaction(string transactionType, uint32 baseReward, uint32 rewardModifier, address sponsor);
 
-    //  Struct containing Health Transactions
+    /// Struct containing Health Transactions
     struct healthTransaction {
         string transactionType;
         uint8 repModifier;
