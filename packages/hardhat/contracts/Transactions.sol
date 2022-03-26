@@ -16,7 +16,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./HealthEntity.sol";
 
-contract MHS is HealthEntity {
+contract Transactions is HealthEntity {
 
     /// Events
     //  Emit event for new health entity registration
@@ -31,10 +31,10 @@ contract MHS is HealthEntity {
         address sponsor;
     }
 
-    //  Mapping of allocated token amounts to tokenId
-    mapping(uint32 => uint256) private tokenBalances;
+    ///  Mapping of allocated token amounts to tokenId
+    mapping(uint32 => uint256) public tokenBalances;
 
-    //  Array of different health transactions 
+    ///  Array of different health transactions 
     healthTransaction[] public transactionTypes;
 
     /// @notice Treasury role is given to a multisig wallet which is governed by the appropriate DAO structure
@@ -43,8 +43,6 @@ contract MHS is HealthEntity {
 
 
     constructor() {
-        _grantRole(TREASURY_ROLE, msg.sender);
-
         /// Set first transactionType as "VERIFY"
         transactionTypes.push(healthTransaction({
             transactionType: "VERIFY",
@@ -62,23 +60,24 @@ contract MHS is HealthEntity {
     function allocateTokens(
         uint32 _tokenId, 
         string memory _transactionType
-        ) public onlyRole(MINTER_ROLE) {
-            tokenBalances[_tokenId] = _tokensAllocated(_transactionType) + tokenBalances[_tokenId];
+        ) internal {
+            tokenBalances[_tokenId] = _tokensAllocated(_transactionType, healthEntities[_tokenId].reputation) + tokenBalances[_tokenId];
         }   
 
     /// Internal Functions
     
-    /// @notice
-    /// @dev
-    /// @param _transactionType The string representing the transaction type
+    /// @notice Returns the amount of tokens allocated for a given health transaction type.
+    /// @dev    Evaluates the if the type exists in the transactionTypes array.
+    /// @param  _transactionType The string representing the transaction type.
     function _tokensAllocated(
-        string memory _transactionType
+        string memory _transactionType,
+        uint32 _reputation
         ) internal view returns (uint32) {
             bool _transactionTypeFound = false;
             for (uint i; i < transactionTypes.length; i++) {
                 if (keccak256(bytes(_transactionType)) == keccak256(bytes(transactionTypes[i].transactionType))) {
                     _transactionTypeFound = true;
-                    return (transactionTypes[i].baseReward + transactionTypes[i].rewardModifier);
+                    return (transactionTypes[i].baseReward + transactionTypes[i].rewardModifier + (_reputation*transactionTypes[i].repModifier));
                 }
             }
             require(_transactionTypeFound, "Transaction type not found!");
@@ -91,7 +90,7 @@ contract MHS is HealthEntity {
     function tokenBalance(
         uint32 _tokenId
         ) external view returns (uint256) {
-            require(_tokenId > healthEntities.length, "Token holder doesn't exist!");
+            require(_tokenId <= healthEntities.length, "Token holder doesn't exist!");
             return tokenBalances[_tokenId];
     }
     

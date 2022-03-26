@@ -17,26 +17,30 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("MHS", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
-    from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
-    log: true,
-    waitConfirmations: 5,
-  });
-
-  const MHS = await ethers.getContract("MHS", deployer);
-
   await deploy("MHSHealToken", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: [MHS.address],
+    args: ["0x2A5A77C9CA2800316A2bD99654dDD0f16E68b732"],
     log: true,
     waitConfirmations: 5,
   });
 
-  // Getting a previously deployed contract
-  const HealToken = await ethers.getContract("HealToken", deployer);
+    // Getting a previously deployed contract
+    const HealToken = await ethers.getContract("MHSHealToken", deployer);
+
+  await deploy("Actions", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    args: ["0x2A5A77C9CA2800316A2bD99654dDD0f16E68b732", HealToken.address],
+    log: true,
+    waitConfirmations: 5,
+  });
+
+  const Actions = await ethers.getContract("Actions", deployer);
+
+  console.log("Initializing MHS Vault...");
+  await HealToken.init(Actions.address);
+
   /*  await YourContract.setPurpose("Hello");
   
     To take ownership of yourContract using the ownable library uncomment next line and add the 
@@ -86,4 +90,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   //   console.error(error);
   // }
 };
-module.exports.tags = ["MHS", "HealToken"];
+module.exports.tags = ["Actions", "HealToken"];
